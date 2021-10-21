@@ -28,8 +28,8 @@ public class UserService {
         return fireBaseService.getCollection(GenericsConstants.USER_COLLECTION);
     }
 
-    public Task<QuerySnapshot> deleteUser(String email) {
-        return null;
+    public Task<Void> deleteUser(String email) {
+        return getCollection().document(email).delete();
     }
 
     public Task<QuerySnapshot> getAllUsers(CollectionReference collectionReference) {

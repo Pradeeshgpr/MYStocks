@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/show_all_user_activity"
     tools:context=".activity.ShowAllUsersActivity">
 
     <com.google.android.material.appbar.AppBarLayout

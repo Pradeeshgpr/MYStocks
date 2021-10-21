@@ -5,9 +5,11 @@ import android.os.Bundle;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -36,6 +38,8 @@ public class ShowAllUsersActivity extends AppCompatActivity {
     private RecyclerView showAllUserRC;
     private final List<ShowAllUserModel> showAllUserModelList = new ArrayList<>();
     private ShowAllUserAdapter showAllUserAdapter = new ShowAllUserAdapter(showAllUserModelList);
+    private RelativeLayout showAllUserRL;
+    private AlertDialog.Builder alertDialogBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,9 @@ public class ShowAllUsersActivity extends AppCompatActivity {
         userService = UserService.getInstance();
         fireBaseService = FireBaseService.getInstance();
         showAllUserRC = findViewById(R.id.show_all_users_list_view);
+        showAllUserRL = findViewById(R.id.show_all_user_activity);
+
+        alertDialogBuilder = new AlertDialog.Builder(this);
     }
 
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -83,6 +90,23 @@ public class ShowAllUsersActivity extends AppCompatActivity {
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            ShowAllUserModel data = showAllUserModelList.get(position);
+            if (data.isAdmin()) {
+                showAllUserAdapter.notifyDataSetChanged();
+                Snackbar.make(showAllUserRL, "User cannot be deleted", BaseTransientBottomBar.LENGTH_SHORT).show();
+            } else {
+                alertDialogBuilder.setTitle("Delete?")
+                        .setMessage("Do you want to delete the user?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            showAllUserModelList.remove(position);
+                            showAllUserAdapter.notifyItemRemoved(position);
+                            userService.deleteUser(data.getEmailId()).addOnSuccessListener(a -> {
+                                Snackbar.make(showAllUserRL, "User deleted", BaseTransientBottomBar.LENGTH_SHORT).show();
+                            });
+                        }).setNegativeButton("No", (dialog, which) -> {dialog.cancel();})
+                .create().show();
+            }
 //            Snackbar.make(showAllUserRC, viewHolder.getAdapterPosition(), BaseTransientBottomBar.LENGTH_SHORT).show();
         }
     };
