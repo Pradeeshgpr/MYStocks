@@ -2,15 +2,19 @@ package com.myowncountry.mystocks.activity;
 
 import android.os.Bundle;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.myowncountry.mystocks.R;
 import com.myowncountry.mystocks.constants.GenericsConstants;
-import com.myowncountry.mystocks.dto.User;
 import com.myowncountry.mystocks.firebase.db.FireBaseService;
 import com.myowncountry.mystocks.recycleview.adapter.ShowAllUserAdapter;
 import com.myowncountry.mystocks.recycleview.model.ShowAllUserModel;
@@ -40,6 +43,8 @@ public class ShowAllUsersActivity extends AppCompatActivity {
     private ShowAllUserAdapter showAllUserAdapter = new ShowAllUserAdapter(showAllUserModelList);
     private RelativeLayout showAllUserRL;
     private AlertDialog.Builder alertDialogBuilder;
+    private FloatingActionButton createUserActionButton;
+    private CreateUserDialogActivity createUserActionActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,10 @@ public class ShowAllUsersActivity extends AppCompatActivity {
         showAllUserRC.setAdapter(showAllUserAdapter);
         showAllUserRC.setHasFixedSize(true);
 
+        createUserActionButton.setOnClickListener(v -> createUser());
+
+
+
     }
 
     private void initObjects() {
@@ -78,8 +87,13 @@ public class ShowAllUsersActivity extends AppCompatActivity {
         fireBaseService = FireBaseService.getInstance();
         showAllUserRC = findViewById(R.id.show_all_users_list_view);
         showAllUserRL = findViewById(R.id.show_all_user_activity);
+        createUserActionButton = findViewById(R.id.show_all_user_add_user);
 
         alertDialogBuilder = new AlertDialog.Builder(this);
+
+
+        createUserActionActivity = new CreateUserDialogActivity(ShowAllUsersActivity.this);
+        createUserActionActivity.setCallbackFunction(a -> onAddSuccess(a));
     }
 
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -104,11 +118,24 @@ public class ShowAllUsersActivity extends AppCompatActivity {
                             userService.deleteUser(data.getEmailId()).addOnSuccessListener(a -> {
                                 Snackbar.make(showAllUserRL, "User deleted", BaseTransientBottomBar.LENGTH_SHORT).show();
                             });
-                        }).setNegativeButton("No", (dialog, which) -> {dialog.cancel();})
+                        }).setNegativeButton("No", (dialog, which) -> {
+                            dialog.cancel();
+                            showAllUserAdapter.notifyDataSetChanged();
+                        })
                 .create().show();
             }
-//            Snackbar.make(showAllUserRC, viewHolder.getAdapterPosition(), BaseTransientBottomBar.LENGTH_SHORT).show();
         }
     };
+
+    private void createUser() {
+        createUserActionActivity.show();
+    }
+
+    private Void onAddSuccess(String emailId) {
+        showAllUserModelList.add(new ShowAllUserModel(emailId, false));
+        showAllUserAdapter.notifyDataSetChanged();
+        Snackbar.make(showAllUserRL, "User added", BaseTransientBottomBar.LENGTH_SHORT).show();
+        return null;
+    }
 
 }
