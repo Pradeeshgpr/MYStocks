@@ -15,7 +15,7 @@
             android:name=".activity.ShowAllUsersActivity"
             android:exported="false"
             android:label="@string/title_activity_show_all_users"
-            android:theme="@style/Theme.MyStocks.NoActionBar" />
+             />
         <activity
             android:name=".MainActivity"
             android:exported="true">

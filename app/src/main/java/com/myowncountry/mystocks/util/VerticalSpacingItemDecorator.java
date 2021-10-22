@@ -1,5 +1,6 @@
 package com.myowncountry.mystocks.util;
 
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.View;
 

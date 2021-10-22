@@ -1,14 +1,17 @@
 package com.myowncountry.mystocks.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -45,6 +48,7 @@ public class ShowAllUsersActivity extends AppCompatActivity {
     private AlertDialog.Builder alertDialogBuilder;
     private FloatingActionButton createUserActionButton;
     private CreateUserDialogActivity createUserActionActivity;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +82,21 @@ public class ShowAllUsersActivity extends AppCompatActivity {
 
         createUserActionButton.setOnClickListener(v -> createUser());
 
+        if (getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
 
+        return super.onOptionsItemSelected(item);
     }
 
     private void initObjects() {
@@ -88,6 +105,7 @@ public class ShowAllUsersActivity extends AppCompatActivity {
         showAllUserRC = findViewById(R.id.show_all_users_list_view);
         showAllUserRL = findViewById(R.id.show_all_user_activity);
         createUserActionButton = findViewById(R.id.show_all_user_add_user);
+//        toolbar = findViewById(R.id.activity_show_all_user_toolbar);
 
         alertDialogBuilder = new AlertDialog.Builder(this);
 
