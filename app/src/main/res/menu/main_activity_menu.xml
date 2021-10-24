@@ -7,6 +7,10 @@
             android:visible="false"
             />
         <item
+            android:id="@+id/show_shop_setting"
+            android:title="Shop Setting"
+            android:visible="false"/>
+        <item
             android:id="@+id/logout"
             android:title="Logout"
             />

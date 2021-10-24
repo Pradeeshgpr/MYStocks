@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.myowncountry.mystocks.activity.ShopSettings;
 import com.myowncountry.mystocks.activity.ShowAllUsersActivity;
 import com.myowncountry.mystocks.constants.GenericsConstants;
 import com.myowncountry.mystocks.dto.User;
@@ -29,9 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInAccount account;
     private FireBaseService fireBaseService;
     private UserService userService;
+    private FloatingActionButton addNewShop;
 
-    private LinearLayout mainActivityLayout;
-    private MenuItem showAllUsers;
+    private RelativeLayout mainActivityLayout;
+    private MenuItem showAllUsers, shopSettingMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void initLayoutAndObjects() {
         mainActivityLayout = findViewById(R.id.main_activity);
+        addNewShop = findViewById(R.id.main_activity_add_new_shop);
+        addNewShop.setOnClickListener(v -> addNewShop());
+    }
+
+    private void addNewShop() {
+
     }
 
     @Override
@@ -56,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_activity_menu, menu);
 
         showAllUsers = menu.findItem(R.id.show_users);
+        shopSettingMenu = menu.findItem(R.id.show_shop_setting);
         return true;
     }
 
@@ -67,11 +78,13 @@ public class MainActivity extends AppCompatActivity {
         signInService = SignInService.getInstant();
         fireBaseService = FireBaseService.getInstance();
         userService = UserService.getInstance();
+
     }
 
     private void initiateUserProcess(User user) {
         if (user.isAdmin()) {
             showAllUsers.setVisible(true);
+            shopSettingMenu.setVisible(true);
         }
     }
 
@@ -84,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.show_users:
                 startActivity(new Intent(getApplicationContext(), ShowAllUsersActivity.class));
                 return true;
+            case R.id.show_shop_setting:
+                startActivity(new Intent(getApplicationContext(), ShopSettings.class));
             default:
                 return super.onOptionsItemSelected(item);
         }

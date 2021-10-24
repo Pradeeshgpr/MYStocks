@@ -10,18 +10,19 @@ import com.myowncountry.mystocks.firebase.db.FireBaseService;
 
 public class UserService {
 
-    private static UserService userService;
+    private static UserService userService = new UserService();
     private static FireBaseService fireBaseService;
 
-    public static final User DEFAULT_USER = new User();
+    public static User DEFAULT_USER;
+
+    private UserService() {
+        fireBaseService = FireBaseService.getInstance();
+        DEFAULT_USER = new User();
+        DEFAULT_USER.setActive(true);
+        DEFAULT_USER.setAdmin(false);
+    }
 
     public static UserService getInstance() {
-        if (userService == null) {
-            userService = new UserService();
-            fireBaseService = FireBaseService.getInstance();
-            DEFAULT_USER.setActive(true);
-            DEFAULT_USER.setAdmin(false);
-        }
         return userService;
     }
 
