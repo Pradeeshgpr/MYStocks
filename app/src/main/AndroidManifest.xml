@@ -12,9 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyStocks">
         <activity
+            android:name=".activity.ShopTransactionDetails"
+            android:exported="false" />
+        <activity
             android:name=".activity.ShopSettings"
             android:exported="false"
-            android:label="@string/title_activity_shops_list"/>
+            android:label="@string/title_activity_shops_list" />
         <activity
             android:name=".activity.ShowAllUsersActivity"
             android:exported="false"

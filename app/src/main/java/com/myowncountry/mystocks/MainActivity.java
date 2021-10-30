@@ -1,29 +1,37 @@
 package com.myowncountry.mystocks;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.myowncountry.mystocks.activity.CreateShopDialogActivity;
 import com.myowncountry.mystocks.activity.ShopSettings;
 import com.myowncountry.mystocks.activity.ShowAllUsersActivity;
 import com.myowncountry.mystocks.constants.GenericsConstants;
+import com.myowncountry.mystocks.dto.ShopDetails;
 import com.myowncountry.mystocks.dto.User;
 import com.myowncountry.mystocks.firebase.db.FireBaseService;
 import com.myowncountry.mystocks.google.signin.SignInService;
+import com.myowncountry.mystocks.recycleview.adapter.ShopDetailsAdapter;
+import com.myowncountry.mystocks.recycleview.model.ShopDetailsRV;
+import com.myowncountry.mystocks.service.ShopDetailService;
 import com.myowncountry.mystocks.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,10 +40,16 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInAccount account;
     private FireBaseService fireBaseService;
     private UserService userService;
+    private ShopDetailService shopDetailService;
     private FloatingActionButton addNewShop;
+    private CreateShopDialogActivity createShopDialogActivity;
 
     private RelativeLayout mainActivityLayout;
     private MenuItem showAllUsers, shopSettingMenu;
+    private ShopDetailsAdapter shopDetailsAdapter;
+    private RecyclerView shopDetailsRC;
+
+    private List<ShopDetailsRV> shopDetailsRVList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +58,49 @@ public class MainActivity extends AppCompatActivity {
         //init object
         initObjects();
 
+        //init Google
+        initGoogle();
+
         //init layout and objects
         initLayoutAndObjects();
 
-        //init Google
-        initGoogle();
+        //load content
+        loadContents();
+    }
+
+    private void loadContents() {
+        shopDetailService.getAllShopDetails().addOnSuccessListener(v-> {
+           for (DocumentSnapshot doc :v.getDocuments()) {
+               shopDetailsRVList.add(new ShopDetailsRV(doc.toObject(ShopDetails.class), doc.getId()));
+           }
+           shopDetailsAdapter.notifyDataSetChanged();
+        });
     }
 
     private void initLayoutAndObjects() {
         mainActivityLayout = findViewById(R.id.main_activity);
         addNewShop = findViewById(R.id.main_activity_add_new_shop);
-        addNewShop.setOnClickListener(v -> addNewShop());
+        addNewShop.setOnClickListener(v -> createShopDialogActivity.show());
+        shopDetailsAdapter = new ShopDetailsAdapter(shopDetailsRVList);
+        shopDetailsRC = findViewById(R.id.main_activity_shop_details);
+
+
+
+        //init recycle view
+        shopDetailsRC.setAdapter(shopDetailsAdapter);
+        shopDetailsRC.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        shopDetailsRC.setHasFixedSize(true);
     }
 
-    private void addNewShop() {
-
+    private void addNewShop(ShopDetails shopDetails) {
+        shopDetails.setOutstandingBottles(0);
+        shopDetails.setOutstandingBottles(0);
+        shopDetailService.createShopDetails(shopDetails).addOnSuccessListener(v -> {
+            String id = v.getId();
+            Snackbar.make(mainActivityLayout, "Created new shop", Snackbar.LENGTH_SHORT);
+            shopDetailsRVList.add(new ShopDetailsRV(shopDetails, id));
+            shopDetailsAdapter.notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -78,7 +120,8 @@ public class MainActivity extends AppCompatActivity {
         signInService = SignInService.getInstant();
         fireBaseService = FireBaseService.getInstance();
         userService = UserService.getInstance();
-
+        shopDetailService = ShopDetailService.getInstance();
+        createShopDialogActivity = new CreateShopDialogActivity(MainActivity.this, shopDetails -> addNewShop(shopDetails));
     }
 
     private void initiateUserProcess(User user) {

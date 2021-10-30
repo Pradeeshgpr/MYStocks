@@ -12,7 +12,6 @@ public class GenericsConstants {
     //collections
     public static final String USER_COLLECTION = "users";
     public static final String SHOPS_COLLECTION = "shops";
-
     public static final String SHOP_SETTINGS_COLLECTION = "shop_setting";
 
     public static final ShopSetting.Value SHOP_SETTING_DEFAULT_VALUE = new ShopSetting.Value();
