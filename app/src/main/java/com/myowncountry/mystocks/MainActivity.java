@@ -4,22 +4,29 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.myowncountry.mystocks.activity.CreateShopDialogActivity;
 import com.myowncountry.mystocks.activity.ShopSettings;
+import com.myowncountry.mystocks.activity.ShopTransactionDetails;
 import com.myowncountry.mystocks.activity.ShowAllUsersActivity;
 import com.myowncountry.mystocks.constants.GenericsConstants;
 import com.myowncountry.mystocks.dto.ShopDetails;
@@ -28,8 +35,11 @@ import com.myowncountry.mystocks.firebase.db.FireBaseService;
 import com.myowncountry.mystocks.google.signin.SignInService;
 import com.myowncountry.mystocks.recycleview.adapter.ShopDetailsAdapter;
 import com.myowncountry.mystocks.recycleview.model.ShopDetailsRV;
+import com.myowncountry.mystocks.recycleview.model.ShowAllUserModel;
 import com.myowncountry.mystocks.service.ShopDetailService;
+import com.myowncountry.mystocks.service.ShopTransactionService;
 import com.myowncountry.mystocks.service.UserService;
+import com.myowncountry.mystocks.util.VerticalSpacingItemDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private FireBaseService fireBaseService;
     private UserService userService;
     private ShopDetailService shopDetailService;
+    private ShopTransactionService shopTransactionService;
     private FloatingActionButton addNewShop;
     private CreateShopDialogActivity createShopDialogActivity;
 
@@ -48,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem showAllUsers, shopSettingMenu;
     private ShopDetailsAdapter shopDetailsAdapter;
     private RecyclerView shopDetailsRC;
+    private AlertDialog.Builder alertDialogBuilder;
+    private User user = null;
 
     private List<ShopDetailsRV> shopDetailsRVList = new ArrayList<>();
 
@@ -64,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
         //init layout and objects
         initLayoutAndObjects();
 
-        //load content
-        loadContents();
     }
 
     private void loadContents() {
@@ -81,8 +92,9 @@ public class MainActivity extends AppCompatActivity {
         mainActivityLayout = findViewById(R.id.main_activity);
         addNewShop = findViewById(R.id.main_activity_add_new_shop);
         addNewShop.setOnClickListener(v -> createShopDialogActivity.show());
-        shopDetailsAdapter = new ShopDetailsAdapter(shopDetailsRVList);
+        shopDetailsAdapter = new ShopDetailsAdapter(shopDetailsRVList, v-> shopSelected(v));
         shopDetailsRC = findViewById(R.id.main_activity_shop_details);
+        alertDialogBuilder = new AlertDialog.Builder(this);
 
 
 
@@ -90,6 +102,16 @@ public class MainActivity extends AppCompatActivity {
         shopDetailsRC.setAdapter(shopDetailsAdapter);
         shopDetailsRC.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         shopDetailsRC.setHasFixedSize(true);
+        VerticalSpacingItemDecorator itemDecorator = new VerticalSpacingItemDecorator(10);
+        shopDetailsRC.addItemDecoration(itemDecorator);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(shopDetailsRC);
+    }
+
+    private void shopSelected(View v) {
+        int itemPosition = shopDetailsRC.getChildLayoutPosition(v);
+        Intent intent = new Intent(getApplicationContext(), ShopTransactionDetails.class);
+        intent.putExtra(GenericsConstants.SHOP_DETAILS, shopDetailsRVList.get(itemPosition));
+        startActivity(intent);
     }
 
     private void addNewShop(ShopDetails shopDetails) {
@@ -122,13 +144,18 @@ public class MainActivity extends AppCompatActivity {
         userService = UserService.getInstance();
         shopDetailService = ShopDetailService.getInstance();
         createShopDialogActivity = new CreateShopDialogActivity(MainActivity.this, shopDetails -> addNewShop(shopDetails));
+        shopTransactionService = ShopTransactionService.getInstance();
     }
 
     private void initiateUserProcess(User user) {
         if (user.isAdmin()) {
             showAllUsers.setVisible(true);
             shopSettingMenu.setVisible(true);
+            addNewShop.setVisibility(View.VISIBLE);
         }
+        this.user = user;
+        //load content
+        loadContents();
     }
 
     @Override
@@ -187,4 +214,37 @@ public class MainActivity extends AppCompatActivity {
             initUser();
         }
     }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            if (user == null || !user.isAdmin()) {
+                Snackbar.make(mainActivityLayout, "You don't have access to delete", BaseTransientBottomBar.LENGTH_SHORT).show();
+                shopDetailsAdapter.notifyItemChanged(position);
+                return;
+            }
+            ShopDetailsRV data = shopDetailsRVList.get(position);
+            alertDialogBuilder.setTitle("Delete?")
+                    .setMessage("Do you want to delete the user?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        shopDetailService.deleteDocument(data.getId()).addOnSuccessListener(a -> {
+                            Snackbar.make(mainActivityLayout, "Shop deleted", BaseTransientBottomBar.LENGTH_SHORT).show();
+                            shopDetailsRVList.remove(position);
+                            shopDetailsAdapter.notifyItemRemoved(position);
+                            shopTransactionService.deleteCollection(data.getId()).addOnSuccessListener(aa -> {
+                                Snackbar.make(mainActivityLayout, "Shop Transaction deleted", BaseTransientBottomBar.LENGTH_SHORT).show();
+                            });
+                        });
+                    }).setNegativeButton("No", (dialog, which) -> {
+                        shopDetailsAdapter.notifyDataSetChanged();
+                        dialog.cancel();
+                    }).create().show();
+        }
+    };
 }

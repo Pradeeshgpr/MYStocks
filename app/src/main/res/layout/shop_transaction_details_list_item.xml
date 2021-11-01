@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="72dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="21/02/1998"
+            android:textSize="20dp"
+            android:id="@+id/shop_transaction_details_activity_list_item_date"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content"
+                    android:text="Received Bottles:"
+                    android:id="@+id/shop_transaction_details_activity_list_item_received_bottle_obj"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/shop_transaction_details_activity_list_item_received_bottle_obj"
+                    android:text="0"
+                    android:id="@+id/shop_transaction_details_activity_list_item_received_bottle"/>
+                <TextView
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content"
+                    android:text="Received Amount:"
+                    android:layout_below="@+id/shop_transaction_details_activity_list_item_received_bottle_obj"
+                    android:id="@+id/shop_transaction_details_activity_list_item_received_amount_obj"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/shop_transaction_details_activity_list_item_received_amount_obj"
+                    android:layout_below="@+id/shop_transaction_details_activity_list_item_received_bottle_obj"
+                    android:text="0"
+                    android:id="@+id/shop_transaction_details_activity_list_item_received_amount"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Given Bottles: "
+                    android:id="@+id/shop_transaction_details_activity_list_item_given_bottle_obj"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/shop_transaction_details_activity_list_item_given_bottle_obj"
+                    android:text="0"
+                    android:id="@+id/shop_transaction_details_activity_list_item_given_bottle"/>
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Given Amount:"
+                    android:layout_below="@+id/shop_transaction_details_activity_list_item_given_bottle_obj"
+                    android:id="@+id/shop_transaction_details_activity_list_item_given_amount_obj"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/shop_transaction_details_activity_list_item_given_amount_obj"
+                    android:layout_below="@+id/shop_transaction_details_activity_list_item_given_bottle_obj"
+                    android:text="0"
+                    android:id="@+id/shop_transaction_details_activity_list_item_given_amount"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

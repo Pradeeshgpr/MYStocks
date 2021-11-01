@@ -18,17 +18,21 @@ import java.util.List;
 
 public class ShopDetailsAdapter extends RecyclerView.Adapter<ShopDetailsAdapter.ViewHolder>  {
 
-    List<ShopDetailsRV> shopDetailsRVList;
+    private List<ShopDetailsRV> shopDetailsRVList;
+    private View.OnClickListener clickListener;
 
-    public ShopDetailsAdapter(List<ShopDetailsRV> shopDetailsRVList) {
+    public ShopDetailsAdapter(List<ShopDetailsRV> shopDetailsRVList, View.OnClickListener clickListener) {
         this.shopDetailsRVList = shopDetailsRVList;
+        this.clickListener = clickListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflation = LayoutInflater.from(parent.getContext());
-        return new ShopDetailsAdapter.ViewHolder(inflation.inflate(R.layout.shop_details_list_item, parent, false));
+        View view = inflation.inflate(R.layout.shop_details_list_item, parent, false);
+        view.setOnClickListener(v -> clickListener.onClick(v));
+        return new ShopDetailsAdapter.ViewHolder(view);
     }
 
     @Override

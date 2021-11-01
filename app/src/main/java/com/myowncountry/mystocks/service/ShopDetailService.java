@@ -29,6 +29,10 @@ public class ShopDetailService {
         return fireBaseService.getCollection(GenericsConstants.SHOPS_COLLECTION);
     }
 
+    public Task<Void> deleteDocument(String id) {
+        return getCollection().document(id).delete();
+    }
+
     public static ShopDetailService getInstance() {
         return shopDetailsService;
     }

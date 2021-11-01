@@ -3,12 +3,17 @@ package com.myowncountry.mystocks.recycleview.model;
 import com.myowncountry.mystocks.animation.textdrawable.TextDrawable;
 import com.myowncountry.mystocks.dto.ShopDetails;
 
-public class ShopDetailsRV {
+import java.io.Serializable;
+
+public class ShopDetailsRV implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String name, address, id;
     private double outstandingAmount;
     private long outstandingBottles;
-    private TextDrawable image;
+
+    private transient TextDrawable image;
 
     public ShopDetailsRV(ShopDetails shopDetails, String id) {
         this.name = shopDetails.getName();

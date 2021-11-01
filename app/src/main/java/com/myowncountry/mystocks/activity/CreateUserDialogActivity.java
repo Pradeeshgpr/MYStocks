@@ -48,8 +48,8 @@ public class CreateUserDialogActivity extends Dialog {
 
 
         setCanceledOnTouchOutside(true);
-        getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT );
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT );
+//        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     private void createUser() {
