@@ -69,7 +69,7 @@ public class ShopTransactionDetails extends AppCompatActivity {
         shopTransactionService = ShopTransactionService.getInstance();
         shopTransactionsDTO = new ShopTransactionsDTO();
         shopTransactionAdapter = new ShopTransactionAdapter(shopTransactionsDTO);
-        shopTransactionDetailsUpdateTransactionDialog = new ShopTransactionDetailsUpdateTransactionDialog(getApplicationContext(), v-> callback(v), v ->cancelCallback());
+        shopTransactionDetailsUpdateTransactionDialog = new ShopTransactionDetailsUpdateTransactionDialog(ShopTransactionDetails.this, v-> callback(v), v ->cancelCallback());
         shopService = ShopService.getInstance();
     }
 
