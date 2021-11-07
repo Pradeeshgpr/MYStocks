@@ -12,6 +12,7 @@ public class ShopService {
     private static ShopService shopService = new ShopService();
     private FireBaseService fireBaseService;
     private String DEFAULT_SETTING = "default_setting";
+    private static ShopSetting shopSetting;
 
     private ShopService() {
         fireBaseService = FireBaseService.getInstance();
@@ -27,6 +28,24 @@ public class ShopService {
 
     public Task<Void> updateData(ShopSetting shopSettings) {
         return getCollection().document(DEFAULT_SETTING).set(shopSettings);
+    }
+
+    public void cacheData() {
+        getData().addOnSuccessListener(v -> {
+            shopSetting = v.toObject(ShopSetting.class);
+        });
+    }
+
+    public void cacheData(ShopSetting shopSetting) {
+        shopSetting = shopSetting;
+    }
+
+    public ShopSetting getCachedData() {
+        if (shopSetting != null) {
+            return shopSetting;
+        } else {
+            throw new NullPointerException();
+        }
     }
 
     public static ShopService getInstance() {

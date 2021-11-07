@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="data"
+            android:layout_weight="1"
+            android:id="@+id/shop_transaction_details_update_list_item_type"
+            android:textSize="20dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:inputType="numberSigned"
+            android:id="@+id/shop_transaction_details_update_list_item_value"
+            android:text="0"
+            android:textSize="20dp"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

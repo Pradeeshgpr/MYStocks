@@ -44,6 +44,7 @@
             android:layout_weight="1"
             android:backgroundTint="@color/green"
             android:layout_marginLeft="5dp"
+            android:id="@+id/shop_transaction_details_received_details"
             android:text="Received"/>
         <Button
             android:layout_width="match_parent"
@@ -52,6 +53,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
             android:backgroundTint="@color/red"
+            android:id="@+id/shop_transaction_details_gave_details"
             android:text="Gave"/>
     </LinearLayout>
 
