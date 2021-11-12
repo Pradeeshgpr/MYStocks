@@ -2,10 +2,13 @@ package com.myowncountry.mystocks;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -43,6 +46,7 @@ import com.myowncountry.mystocks.util.VerticalSpacingItemDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,8 +65,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView shopDetailsRC;
     private AlertDialog.Builder alertDialogBuilder;
     private User user = null;
+    private EditText searchET;
 
     private List<ShopDetailsRV> shopDetailsRVList = new ArrayList<>();
+    private List<ShopDetailsRV> shopDetailsRVNonFilteredList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +88,9 @@ public class MainActivity extends AppCompatActivity {
     private void loadContents() {
         shopDetailService.getAllShopDetails().addOnSuccessListener(v-> {
            for (DocumentSnapshot doc :v.getDocuments()) {
-               shopDetailsRVList.add(new ShopDetailsRV(doc.toObject(ShopDetails.class), doc.getId()));
+               ShopDetailsRV data = new ShopDetailsRV(doc.toObject(ShopDetails.class), doc.getId());
+               shopDetailsRVList.add(data);
+               shopDetailsRVNonFilteredList.add(data);
            }
            shopDetailsAdapter.notifyDataSetChanged();
         });
@@ -90,11 +98,37 @@ public class MainActivity extends AppCompatActivity {
 
     private void initLayoutAndObjects() {
         mainActivityLayout = findViewById(R.id.main_activity);
+        searchET = findViewById(R.id.main_activity_search_bar);
         addNewShop = findViewById(R.id.main_activity_add_new_shop);
         addNewShop.setOnClickListener(v -> createShopDialogActivity.show());
         shopDetailsAdapter = new ShopDetailsAdapter(shopDetailsRVList, v-> shopSelected(v));
         shopDetailsRC = findViewById(R.id.main_activity_shop_details);
         alertDialogBuilder = new AlertDialog.Builder(this);
+
+        searchET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                shopDetailsRVList.clear();
+                if (text == null || text.isEmpty()) {
+                    shopDetailsRVList.addAll(shopDetailsRVNonFilteredList);
+
+                } else {
+                    shopDetailsRVList.addAll(shopDetailsRVNonFilteredList.stream().filter(doc -> doc.getName().contains(text)).collect(Collectors.toList()));
+                }
+                shopDetailsAdapter.notifyDataSetChanged();
+            }
+        });
 
 
 

@@ -24,6 +24,7 @@ public class GenericsConstants {
     public static final String EMPTY_STRING = "";
 
     public static final String YES = "Yes";
+    public static final String NO = "No";
 
     //max transaction
     public static final int MAX_TRANSACTION_PER_SHOP = 3000;

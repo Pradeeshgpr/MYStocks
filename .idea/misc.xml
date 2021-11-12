@@ -5,7 +5,7 @@
       <map>
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/drawable/ic_launcher_background.xml" value="0.11614583333333334" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/drawable/rounded_corner.xml" value="0.11614583333333334" />
-        <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/activity_main.xml" value="0.15" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/activity_shop_settings.xml" value="0.22" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/activity_shop_transaction_details.xml" value="0.2351851851851852" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/activity_show_all_users.xml" value="0.22" />
@@ -17,7 +17,7 @@
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/shop_details_list_item.xml" value="0.1" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/shop_setting_list_item.xml" value="0.22" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/shop_transaction_details_list_item.xml" value="0.5322461082283173" />
-        <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/shop_transaction_details_update_list_item.xml" value="0.5" />
+        <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/shop_transaction_details_update_list_item.xml" value="0.33" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/shop_transaction_details_update_transaction_dialog.xml" value="0.25" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/layout/show_all_user_list_item.xml" value="0.22" />
         <entry key="..\:/Users/Pradeesh/AndroidStudioProjects/MyStocks/app/src/main/res/menu/main_activity_menu.xml" value="0.15" />

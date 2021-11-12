@@ -5,6 +5,7 @@ public class ShopTransactionUpdateDTO {
     private String type;
     private long value;
     private boolean bottleCounter;
+    private long qty;
 
     public ShopTransactionUpdateDTO() {
 
@@ -14,6 +15,7 @@ public class ShopTransactionUpdateDTO {
         this.type = type;
         this.value = value;
         this.bottleCounter = bottleCounter;
+        this.qty = 0;
     }
 
     public boolean isBottleCounter() {
@@ -38,5 +40,13 @@ public class ShopTransactionUpdateDTO {
 
     public void setValue(long value) {
         this.value = value;
+    }
+
+    public long getQty() {
+        return qty;
+    }
+
+    public void setQty(long qty) {
+        this.qty = qty;
     }
 }

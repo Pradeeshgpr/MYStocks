@@ -31,11 +31,38 @@ public class ShopTransactionDetailsUpdateTransactionDialog extends Dialog {
     private ShopService shopService;
     private Consumer<Class<Void>> cancelCallback;
     private ShopTransactionDetailsUpdateAdapter shopTransactionDetailsUpdateAdapter;
+    private boolean given = false;
 
     public ShopTransactionDetailsUpdateTransactionDialog(@NonNull Context context, Consumer<List<ShopTransactionUpdateDTO>> callback, Consumer<Class<Void>> cancelCallback) {
         super(context);
         this.callback = callback;
         this.cancelCallback = cancelCallback;
+    }
+
+    public void setGiven(boolean given) {
+        this.given = given;
+    }
+
+    public void setData() {
+        shopTransactionUpdateDTO.clear();
+        if (given) {
+            try {
+                updateList(shopService.getCachedData().getValuesType());
+            } catch (NullPointerException e) {
+                shopService.getData().addOnSuccessListener(v -> {
+                    ShopSetting shopSetting = v.toObject(ShopSetting.class);
+                    shopService.updateData(shopSetting);
+                    updateList(shopSetting.getValuesType());
+                });
+            }
+            shopTransactionDetailsUpdateAdapter.setGiven(true);
+        } else {
+            shopTransactionDetailsUpdateAdapter.setGiven(false);
+            shopTransactionUpdateDTO.add(new ShopTransactionUpdateDTO("Amount", 0, false));
+            shopTransactionUpdateDTO.add(new ShopTransactionUpdateDTO("Bottles", 0, true));
+            shopTransactionUpdateDTO.add(new ShopTransactionUpdateDTO("Broken bottle", 0, true));
+        }
+        shopTransactionDetailsUpdateAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -50,6 +77,13 @@ public class ShopTransactionDetailsUpdateTransactionDialog extends Dialog {
 
         //init listener
         initListeners();
+
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        setData();
     }
 
     private void initData() {
@@ -58,15 +92,6 @@ public class ShopTransactionDetailsUpdateTransactionDialog extends Dialog {
         shopTransactionDetailsRC.setLayoutManager(new LinearLayoutManager(getContext()));
         shopTransactionDetailsRC.setHasFixedSize(true);
 
-        try {
-            updateList(shopService.getCachedData().getValuesType());
-        } catch (NullPointerException e) {
-            shopService.getData().addOnSuccessListener(v -> {
-                ShopSetting shopSetting = v.toObject(ShopSetting.class);
-                shopService.updateData(shopSetting);
-                updateList(shopSetting.getValuesType());
-            });
-        }
     }
 
     private void updateList(List<ShopSetting.Value> values) {

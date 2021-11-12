@@ -9,6 +9,15 @@ import java.util.Map;
 public class ShopSetting {
 
     private List<Value> valuesType = new ArrayList<>();
+    private double bottlePrice;
+
+    public double getBottlePrice() {
+        return bottlePrice;
+    }
+
+    public void setBottlePrice(double bottlePrice) {
+        this.bottlePrice = bottlePrice;
+    }
 
     public static class Value {
         private String type;

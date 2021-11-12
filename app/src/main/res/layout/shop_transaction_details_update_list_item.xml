@@ -16,6 +16,14 @@
             android:id="@+id/shop_transaction_details_update_list_item_type"
             android:textSize="20dp"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="X10"
+            android:id="@+id/shop_transaction_details_update_list_item_type_value"
+            android:layout_weight="1.6"
+            />
+
         <EditText
             android:layout_width="match_parent"
             android:layout_weight="1"

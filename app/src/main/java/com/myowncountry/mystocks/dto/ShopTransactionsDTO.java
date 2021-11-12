@@ -1,6 +1,7 @@
 package com.myowncountry.mystocks.dto;
 
 import com.myowncountry.mystocks.constants.GenericsConstants;
+import com.myowncountry.mystocks.recycleview.model.ShopTransactionUpdateDTO;
 import com.myowncountry.mystocks.util.FixedArrayList;
 
 import java.util.Date;
@@ -34,39 +35,50 @@ public class ShopTransactionsDTO {
         }
     }
 
+    public void add(long bottleReceived, double amountReceived, long outStandingBottle, double outStandingAmount) {
+        ShopTransaction newObj = new ShopTransaction();
+        newObj.setCreatedOn(new Date());
+        newObj.setReceivedAmount(amountReceived);
+        newObj.setReceivedBottles(bottleReceived);
+        newObj.setBottles(outStandingBottle);
+        newObj.setTotalPrice(outStandingAmount);
+        this.shopTransactionList.add(newObj);
+    }
+
     public static class ShopTransaction {
-        private int bottles, totalPrice, receivedAmount, receivedBottles;
+        private double totalPrice, receivedAmount;
+        long bottles, receivedBottles;
         private Date createdOn;
 
-        public int getBottles() {
-            return bottles;
-        }
-
-        public void setBottles(int bottles) {
-            this.bottles = bottles;
-        }
-
-        public int getTotalPrice() {
+        public double getTotalPrice() {
             return totalPrice;
         }
 
-        public void setTotalPrice(int totalPrice) {
+        public void setTotalPrice(double totalPrice) {
             this.totalPrice = totalPrice;
         }
 
-        public int getReceivedAmount() {
+        public double getReceivedAmount() {
             return receivedAmount;
         }
 
-        public void setReceivedAmount(int receivedAmount) {
+        public void setReceivedAmount(double receivedAmount) {
             this.receivedAmount = receivedAmount;
         }
 
-        public int getReceivedBottles() {
+        public long getBottles() {
+            return bottles;
+        }
+
+        public void setBottles(long bottles) {
+            this.bottles = bottles;
+        }
+
+        public long getReceivedBottles() {
             return receivedBottles;
         }
 
-        public void setReceivedBottles(int receivedBottles) {
+        public void setReceivedBottles(long receivedBottles) {
             this.receivedBottles = receivedBottles;
         }
 

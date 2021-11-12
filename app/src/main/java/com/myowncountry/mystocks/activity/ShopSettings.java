@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -26,6 +27,7 @@ public class ShopSettings extends AppCompatActivity {
     private LinearLayout relativeLayout;
     private RecyclerView shopSettingRC;
     private Button addNewBT, saveBT;
+    private EditText bottleCost;
     private ShopSettingAdapter shopSettingAdapter;
     private ShopSetting shopSettings = new ShopSetting();
     private AlertDialog.Builder alertDialogBuilder;
@@ -66,7 +68,7 @@ public class ShopSettings extends AppCompatActivity {
         shopSettingRC.setLayoutManager(new LinearLayoutManager(this));
 
         addNewBT.setOnClickListener(v -> {
-            shopSettings.getValuesType().add(GenericsConstants.SHOP_SETTING_DEFAULT_VALUE);
+            shopSettings.getValuesType().add(new ShopSetting.Value());
             shopSettingAdapter.notifyDataSetChanged();
         });
 
@@ -78,6 +80,16 @@ public class ShopSettings extends AppCompatActivity {
         alertDialogBuilder.setTitle("Save")
                 .setMessage("Do you want to save changes")
                 .setPositiveButton("Yes", (dialog, which) -> {
+                    for (ShopSetting.Value value : shopSettings.getValuesType()) {
+                        if (value.getValue() <= 0) {
+                            Snackbar.make(relativeLayout, "Enter details correctly", Snackbar.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (value.getBottleCounted() == null || value.getBottleCounted().isEmpty()) {
+                            value.setBottleCounted(GenericsConstants.YES);
+                        }
+                    }
+                    shopSettings.setBottlePrice(Double.parseDouble(bottleCost.toString()));
                     shopService.updateData(shopSettings).addOnSuccessListener( v -> {
                         Snackbar.make(relativeLayout, "Save success", Snackbar.LENGTH_SHORT).show();
                     });
@@ -92,6 +104,7 @@ public class ShopSettings extends AppCompatActivity {
         shopSettingRC = findViewById(R.id.rc_shop_setting_values);
         addNewBT = findViewById(R.id.activity_shop_setting_add_new);
         saveBT = findViewById(R.id.activity_shop_setting_save);
+        bottleCost = findViewById(R.id.shop_setting_bottle_cost);
     }
 
     @Override

@@ -33,6 +33,10 @@ public class ShopDetailService {
         return getCollection().document(id).delete();
     }
 
+    public Task<Void> updateData(String id, ShopDetails shopDetails) {
+        return getCollection().document(id).set(shopDetails);
+    }
+
     public static ShopDetailService getInstance() {
         return shopDetailsService;
     }

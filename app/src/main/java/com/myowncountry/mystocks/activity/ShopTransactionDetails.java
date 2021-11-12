@@ -9,13 +9,17 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.myowncountry.mystocks.R;
 import com.myowncountry.mystocks.constants.GenericsConstants;
+import com.myowncountry.mystocks.dto.ShopDetails;
 import com.myowncountry.mystocks.dto.ShopTransactionsDTO;
 import com.myowncountry.mystocks.recycleview.adapter.ShopTransactionAdapter;
 import com.myowncountry.mystocks.recycleview.model.ShopDetailsRV;
 import com.myowncountry.mystocks.recycleview.model.ShopTransactionUpdateDTO;
+import com.myowncountry.mystocks.service.ShopDetailService;
 import com.myowncountry.mystocks.service.ShopService;
 import com.myowncountry.mystocks.service.ShopTransactionService;
 
@@ -34,6 +38,8 @@ public class ShopTransactionDetails extends AppCompatActivity {
     private ShopTransactionAdapter shopTransactionAdapter;
     private ShopTransactionDetailsUpdateTransactionDialog shopTransactionDetailsUpdateTransactionDialog;
     private ShopService shopService;
+    private ShopDetailService shopDetailService;
+
 
     private Operation state = Operation.IN_VALID;
 
@@ -71,6 +77,7 @@ public class ShopTransactionDetails extends AppCompatActivity {
         shopTransactionAdapter = new ShopTransactionAdapter(shopTransactionsDTO);
         shopTransactionDetailsUpdateTransactionDialog = new ShopTransactionDetailsUpdateTransactionDialog(ShopTransactionDetails.this, v-> callback(v), v ->cancelCallback());
         shopService = ShopService.getInstance();
+        shopDetailService = ShopDetailService.getInstance();
     }
 
     private void cancelCallback() {
@@ -78,11 +85,42 @@ public class ShopTransactionDetails extends AppCompatActivity {
     }
 
     private void callback(List<ShopTransactionUpdateDTO> v) {
+        long bottle = shopDetails.getOutstandingBottles();
+        double amount = shopDetails.getOutstandingAmount();
         if (state == Operation.GIVEN) {
+            for (ShopTransactionUpdateDTO shopTransactionUpdateDTO : v) {
+                if (shopTransactionUpdateDTO.isBottleCounter()) {
+                    bottle += shopTransactionUpdateDTO.getQty();
+                }
+                amount += (shopTransactionUpdateDTO.getQty() * shopTransactionUpdateDTO.getValue());
+            }
 
         } else if (state == Operation.RECEIVED) {
-
+            amount  -= v.get(0).getQty();
+            bottle -= (v.get(1).getQty() + v.get(2).getQty());
         }
+        ShopDetails updateDetails = new ShopDetails();
+        updateDetails.setName(shopDetails.getName());
+        updateDetails.setAddress(shopDetails.getAddress());
+        updateDetails.setOutstandingBottles(bottle);
+        updateDetails.setOutstandingAmount(amount);
+        shopDetailService.updateData(shopDetails.getId(), updateDetails).addOnSuccessListener(s -> {
+            long givenBottle = updateDetails.getOutstandingBottles(), receivedBottle = 0;
+            double givenAmount = updateDetails.getOutstandingAmount(), receivedAmount = 0;
+            if (state == Operation.RECEIVED) {
+                receivedBottle = v.get(1).getQty();
+                receivedAmount = v.get(0).getQty();
+            }
+            shopDetails.setOutstandingBottles(updateDetails.getOutstandingBottles());
+            shopDetails.setOutstandingAmount(updateDetails.getOutstandingAmount());
+            shopTransactionsDTO.add(receivedBottle, receivedAmount, givenBottle, givenAmount);
+            shopTransactionService.updateData(shopDetails.getId(), shopTransactionsDTO).addOnSuccessListener(d -> {
+                Toast.makeText(getApplicationContext(), "Updated details", Toast.LENGTH_SHORT).show();
+                shopTransactionAdapter.notifyItemChanged(0);
+            });
+            remainingAmount.setText("" + updateDetails.getOutstandingAmount());
+            remainingBottle.setText("" + updateDetails.getOutstandingBottles());
+        });
     }
 
     private void initData() {
@@ -96,6 +134,7 @@ public class ShopTransactionDetails extends AppCompatActivity {
         shopTransactionService.getData(shopDetails.getId()).addOnSuccessListener(v -> {
             if (v.exists()) {
                 shopTransactionsDTO.addAll(v.toObject(ShopTransactionsDTO.class));
+                shopTransactionAdapter.notifyDataSetChanged();
             }
         });
 
@@ -105,11 +144,15 @@ public class ShopTransactionDetails extends AppCompatActivity {
 
         received.setOnClickListener(v -> {
             state = Operation.RECEIVED;
+            shopTransactionDetailsUpdateTransactionDialog.setGiven(false);
+//            shopTransactionDetailsUpdateTransactionDialog.setData();
             shopTransactionDetailsUpdateTransactionDialog.show();
         });
 
         gave.setOnClickListener(v -> {
             state = Operation.GIVEN;
+            shopTransactionDetailsUpdateTransactionDialog.setGiven(true);
+//            shopTransactionDetailsUpdateTransactionDialog.setData();
             shopTransactionDetailsUpdateTransactionDialog.show();
         });
 
