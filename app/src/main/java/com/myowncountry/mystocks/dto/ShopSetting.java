@@ -22,17 +22,26 @@ public class ShopSetting {
     public static class Value {
         private String type;
         private String bottleCounted;
-        private long value;
+        private double value;
+        private long stocksCount;
+
+        public long getStocksCount() {
+            return stocksCount;
+        }
+
+        public void setStocksCount(long stocksCount) {
+            this.stocksCount = stocksCount;
+        }
 
         public Value() {
             value = 0;
         }
 
-        public long getValue() {
+        public double getValue() {
             return value;
         }
 
-        public void setValue(long value) {
+        public void setValue(double value) {
             this.value = value;
         }
 

@@ -12,7 +12,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="2.5"
             android:id="@+id/shop_setting_list_item_type"/>
 
         <Spinner
@@ -26,8 +26,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
+            android:inputType="numberDecimal"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <EditText
+            android:id="@+id/shop_setting_list_item_stocks_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
             android:inputType="numberSigned"
             tools:ignore="SpeakableTextPresentCheck" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

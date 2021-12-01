@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ShopTransactionsDTO {
 
-    private List<ShopTransaction> shopTransactionList = new FixedArrayList(GenericsConstants.MAX_TRANSACTION_PER_SHOP);
+    private List<ShopTransaction> shopTransactionList = new FixedArrayList<>(GenericsConstants.MAX_TRANSACTION_PER_SHOP);
 
     public ShopTransactionsDTO() {
 

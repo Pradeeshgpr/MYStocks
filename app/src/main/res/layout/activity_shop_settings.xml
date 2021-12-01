@@ -39,14 +39,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Bottle Cost"/>
+            android:text="Broken Bottle Cost"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="numberDecimal"
             android:text="0"
-            android:id="@+id/shop_setting_bottle_cost"/>
+            android:id="@+id/shop_setting_broken_bottle_cost"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

@@ -39,9 +39,30 @@ public class ShopSettingAdapter extends RecyclerView.Adapter<ShopSettingAdapter.
         ShopSetting.Value data = shopSetting.getValuesType().get(position);
         holder.name.setText(data.getType());
         holder.value.setText("" + data.getValue());
+        holder.stocks.setText(Long.toString(data.getStocksCount()));
         if (data.getBottleCounted() != null) {
             holder.booleanSelector.setSelection(adapter.getPosition(data.getBottleCounted()));
         }
+
+        holder.stocks.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String d = s.toString();
+                if (!d.isEmpty()) {
+                    data.setStocksCount(Long.parseLong(s.toString()));
+                }
+            }
+        });
 
         holder.name.addTextChangedListener(new TextWatcher() {
 
@@ -74,7 +95,7 @@ public class ShopSettingAdapter extends RecyclerView.Adapter<ShopSettingAdapter.
             @Override
             public void afterTextChanged(Editable s) {
                 if (!s.toString().isEmpty()) {
-                    data.setValue(Long.parseLong(s.toString()));
+                    data.setValue(Double.parseDouble(s.toString()));
                 } else {
                     data.setValue(0);
                 }
@@ -102,7 +123,7 @@ public class ShopSettingAdapter extends RecyclerView.Adapter<ShopSettingAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        protected EditText name, value;
+        protected EditText name, value, stocks;
         protected Spinner booleanSelector;
 
         public ViewHolder(@NonNull View itemView) {
@@ -110,6 +131,7 @@ public class ShopSettingAdapter extends RecyclerView.Adapter<ShopSettingAdapter.
 
             name = itemView.findViewById(R.id.shop_setting_list_item_type);
             value = itemView.findViewById(R.id.shop_setting_list_item_value);
+            stocks = itemView.findViewById(R.id.shop_setting_list_item_stocks_count);
             booleanSelector = itemView.findViewById(R.id.shop_setting_list_item_is_bottle_count_added);
         }
 

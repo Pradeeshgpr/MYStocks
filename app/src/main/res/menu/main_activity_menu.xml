@@ -4,16 +4,18 @@
         <item
             android:id="@+id/show_users"
             android:title="Users"
-            android:visible="false"
-            />
+            android:visible="false"/>
         <item
             android:id="@+id/show_shop_setting"
             android:title="Shop Setting"
             android:visible="false"/>
         <item
             android:id="@+id/logout"
-            android:title="Logout"
-            />
+            android:title="Logout"/>
+        <item
+            android:id="@+id/show_export"
+            android:title="Export"
+            android:visible="false"/>
     </group>
 
 </menu>

@@ -44,6 +44,8 @@ public class ShopDetailsAdapter extends RecyclerView.Adapter<ShopDetailsAdapter.
         holder.shopNameImage.setImageDrawable(shop.getImage());
         holder.shopName.setText(shop.getName());
         holder.shopAddress.setText(shop.getAddress());
+        holder.bottlesCount.setText(Long.toString(shop.getOutstandingBottles()));
+        holder.amount.setText(Double.toString(shop.getOutstandingAmount()));
     }
 
     @Override
@@ -55,12 +57,14 @@ public class ShopDetailsAdapter extends RecyclerView.Adapter<ShopDetailsAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView shopNameImage;
-        public TextView shopName, shopAddress;
+        public TextView shopName, shopAddress, bottlesCount, amount;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             shopNameImage = itemView.findViewById(R.id.shop_details_list_item_image);
             shopName = itemView.findViewById(R.id.shop_details_list_item_name);
             shopAddress = itemView.findViewById(R.id.shop_details_list_item_address);
+            bottlesCount = itemView.findViewById(R.id.shop_details_list_item_bottles_count);
+            amount = itemView.findViewById(R.id.shop_details_list_item_amount);
         }
     }
 

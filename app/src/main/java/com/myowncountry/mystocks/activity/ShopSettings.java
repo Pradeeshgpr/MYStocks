@@ -77,6 +77,7 @@ public class ShopSettings extends AppCompatActivity {
     }
 
     private void saveAction() {
+        shopSettings.setBottlePrice(Double.parseDouble(bottleCost.getText().toString()));
         alertDialogBuilder.setTitle("Save")
                 .setMessage("Do you want to save changes")
                 .setPositiveButton("Yes", (dialog, which) -> {
@@ -89,7 +90,6 @@ public class ShopSettings extends AppCompatActivity {
                             value.setBottleCounted(GenericsConstants.YES);
                         }
                     }
-                    shopSettings.setBottlePrice(Double.parseDouble(bottleCost.toString()));
                     shopService.updateData(shopSettings).addOnSuccessListener( v -> {
                         Snackbar.make(relativeLayout, "Save success", Snackbar.LENGTH_SHORT).show();
                     });
@@ -104,7 +104,7 @@ public class ShopSettings extends AppCompatActivity {
         shopSettingRC = findViewById(R.id.rc_shop_setting_values);
         addNewBT = findViewById(R.id.activity_shop_setting_add_new);
         saveBT = findViewById(R.id.activity_shop_setting_save);
-        bottleCost = findViewById(R.id.shop_setting_bottle_cost);
+        bottleCost = findViewById(R.id.shop_setting_broken_bottle_cost);
     }
 
     @Override
